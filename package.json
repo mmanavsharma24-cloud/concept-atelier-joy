@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@vitejs/plugin-react": "^5.1.4",
+    "lovable-tagger": "^1.1.13",
     "react": "^19.2.4",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
