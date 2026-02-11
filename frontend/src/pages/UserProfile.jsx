@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import '../styles/UserProfile.css';
 
 const UserProfile = () => {
   const { user, token } = useAuth();
@@ -17,9 +16,7 @@ const UserProfile = () => {
     profile_photo: null
   });
 
-  useEffect(() => {
-    fetchProfile();
-  }, []);
+  useEffect(() => { fetchProfile(); }, []);
 
   const fetchProfile = async () => {
     try {
@@ -29,15 +26,8 @@ const UserProfile = () => {
       if (!response.ok) throw new Error('Failed to fetch profile');
       const data = await response.json();
       setProfile(data);
-      setFormData({
-        phone: data.phone || '',
-        address: data.address || '',
-        bio: data.bio || '',
-        profile_photo: null
-      });
-      if (data.profile_photo) {
-        setPhotoPreview(`http://localhost:5000${data.profile_photo}`);
-      }
+      setFormData({ phone: data.phone || '', address: data.address || '', bio: data.bio || '', profile_photo: null });
+      if (data.profile_photo) setPhotoPreview(`http://localhost:5000${data.profile_photo}`);
       setLoading(false);
     } catch (err) {
       setError(err.message);
@@ -64,13 +54,10 @@ const UserProfile = () => {
     e.preventDefault();
     setError('');
     setSuccess('');
-
     try {
-      // Upload photo if selected
       if (formData.profile_photo) {
         const photoFormData = new FormData();
         photoFormData.append('profile_photo', formData.profile_photo);
-        
         const photoResponse = await fetch('http://localhost:5000/api/users/profile/upload-photo', {
           method: 'POST',
           headers: { Authorization: `Bearer ${token}` },
@@ -78,21 +65,11 @@ const UserProfile = () => {
         });
         if (!photoResponse.ok) throw new Error('Failed to upload photo');
       }
-
-      // Update profile
       const response = await fetch('http://localhost:5000/api/users/profile', {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          phone: formData.phone,
-          address: formData.address,
-          bio: formData.bio
-        })
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ phone: formData.phone, address: formData.address, bio: formData.bio })
       });
-
       if (!response.ok) throw new Error('Failed to update profile');
       const data = await response.json();
       setProfile(data.user);
@@ -104,141 +81,95 @@ const UserProfile = () => {
     }
   };
 
-  if (loading) return <div className="user-profile-container"><p>Loading...</p></div>;
+  if (loading) return <div className="p-5 max-w-[900px] mx-auto"><p>Loading...</p></div>;
+
+  const inputClasses = "p-2.5 px-3 border border-gray-300 rounded-md text-sm font-inherit transition-colors duration-300 focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-500/10";
+  const disabledInputClasses = `${inputClasses} bg-gray-50 text-gray-500 cursor-not-allowed`;
 
   return (
-    <div className="user-profile-container">
-      <div className="profile-card">
-        <div className="profile-header">
-          <h1>My Profile</h1>
+    <div className="p-5 max-w-[900px] mx-auto">
+      <div className="bg-white rounded-lg shadow-md p-8 max-md:p-5">
+        <div className="flex justify-between items-center mb-8 border-b-2 border-gray-100 pb-5 max-md:flex-col max-md:gap-4 max-md:items-start">
+          <h1 className="text-[28px] text-blue-800 m-0">My Profile</h1>
           {!isEditing && (
-            <button className="edit-btn" onClick={() => setIsEditing(true)}>
+            <button className="bg-blue-500 text-white border-none px-5 py-2.5 rounded-md cursor-pointer text-sm font-medium transition-colors duration-300 hover:bg-blue-700" onClick={() => setIsEditing(true)}>
               Edit Profile
             </button>
           )}
         </div>
 
-        {error && <div className="alert alert-error">{error}</div>}
-        {success && <div className="alert alert-success">{success}</div>}
+        {error && <div className="p-3 rounded-md mb-5 text-sm bg-red-100 text-red-800 border border-red-200">{error}</div>}
+        {success && <div className="p-3 rounded-md mb-5 text-sm bg-green-100 text-green-800 border border-green-200">{success}</div>}
 
-        <div className="profile-content">
-          <div className="profile-photo-section">
-            <div className="photo-container">
+        <div className="grid grid-cols-[200px_1fr] gap-10 max-md:grid-cols-1">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-[180px] h-[180px] rounded-full overflow-hidden border-[3px] border-gray-200 flex items-center justify-center bg-gray-50">
               {photoPreview ? (
-                <img src={photoPreview} alt="Profile" className="profile-photo" />
+                <img src={photoPreview} alt="Profile" className="w-full h-full object-cover" />
               ) : (
-                <div className="photo-placeholder">
+                <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400 text-sm">
                   <span>No Photo</span>
                 </div>
               )}
             </div>
             {isEditing && (
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handlePhotoChange}
-                className="photo-input"
-              />
+              <input type="file" accept="image/*" onChange={handlePhotoChange} className="w-full p-2 border border-gray-300 rounded-md text-xs" />
             )}
           </div>
 
-          <div className="profile-details">
+          <div className="flex-1">
             {isEditing ? (
-              <form onSubmit={handleSubmit} className="profile-form">
-                <div className="form-group">
-                  <label>Full Name</label>
-                  <input type="text" value={profile.full_name} disabled className="form-input disabled" />
+              <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-5 max-md:grid-cols-1">
+                <div className="flex flex-col gap-2">
+                  <label className="font-semibold text-gray-600 text-sm">Full Name</label>
+                  <input type="text" value={profile.full_name} disabled className={disabledInputClasses} />
                 </div>
-
-                <div className="form-group">
-                  <label>Email</label>
-                  <input type="email" value={profile.email} disabled className="form-input disabled" />
+                <div className="flex flex-col gap-2">
+                  <label className="font-semibold text-gray-600 text-sm">Email</label>
+                  <input type="email" value={profile.email} disabled className={disabledInputClasses} />
                 </div>
-
-                <div className="form-group">
-                  <label>Phone</label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    className="form-input"
-                  />
+                <div className="flex flex-col gap-2">
+                  <label className="font-semibold text-gray-600 text-sm">Phone</label>
+                  <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} className={inputClasses} />
                 </div>
-
-                <div className="form-group">
-                  <label>Address</label>
-                  <input
-                    type="text"
-                    name="address"
-                    value={formData.address}
-                    onChange={handleInputChange}
-                    className="form-input"
-                  />
+                <div className="flex flex-col gap-2">
+                  <label className="font-semibold text-gray-600 text-sm">Address</label>
+                  <input type="text" name="address" value={formData.address} onChange={handleInputChange} className={inputClasses} />
                 </div>
-
-                <div className="form-group">
-                  <label>Bio</label>
-                  <textarea
-                    name="bio"
-                    value={formData.bio}
-                    onChange={handleInputChange}
-                    className="form-input"
-                    rows="4"
-                  />
+                <div className="flex flex-col gap-2 col-span-full">
+                  <label className="font-semibold text-gray-600 text-sm">Bio</label>
+                  <textarea name="bio" value={formData.bio} onChange={handleInputChange} className={`${inputClasses} resize-y min-h-[100px]`} rows="4" />
                 </div>
-
-                <div className="form-group">
-                  <label>Department</label>
-                  <input type="text" value={profile.department} disabled className="form-input disabled" />
+                <div className="flex flex-col gap-2">
+                  <label className="font-semibold text-gray-600 text-sm">Department</label>
+                  <input type="text" value={profile.department} disabled className={disabledInputClasses} />
                 </div>
-
-                <div className="form-group">
-                  <label>Role</label>
-                  <input type="text" value={profile.role} disabled className="form-input disabled" />
+                <div className="flex flex-col gap-2">
+                  <label className="font-semibold text-gray-600 text-sm">Role</label>
+                  <input type="text" value={profile.role} disabled className={disabledInputClasses} />
                 </div>
-
-                <div className="form-actions">
-                  <button type="submit" className="btn btn-primary">Save Changes</button>
-                  <button type="button" className="btn btn-secondary" onClick={() => setIsEditing(false)}>
-                    Cancel
-                  </button>
+                <div className="col-span-full flex gap-3 mt-5">
+                  <button type="submit" className="px-5 py-2.5 bg-blue-500 text-white border-none rounded-md cursor-pointer text-sm font-medium transition-all duration-300 hover:bg-blue-700">Save Changes</button>
+                  <button type="button" className="px-5 py-2.5 bg-gray-200 text-gray-700 border-none rounded-md cursor-pointer text-sm font-medium transition-all duration-300 hover:bg-gray-300" onClick={() => setIsEditing(false)}>Cancel</button>
                 </div>
               </form>
             ) : (
-              <div className="profile-view">
-                <div className="info-row">
-                  <span className="label">Full Name:</span>
-                  <span className="value">{profile.full_name}</span>
-                </div>
-                <div className="info-row">
-                  <span className="label">Email:</span>
-                  <span className="value">{profile.email}</span>
-                </div>
-                <div className="info-row">
-                  <span className="label">Phone:</span>
-                  <span className="value">{profile.phone || 'Not provided'}</span>
-                </div>
-                <div className="info-row">
-                  <span className="label">Address:</span>
-                  <span className="value">{profile.address || 'Not provided'}</span>
-                </div>
-                <div className="info-row">
-                  <span className="label">Bio:</span>
-                  <span className="value">{profile.bio || 'Not provided'}</span>
-                </div>
-                <div className="info-row">
-                  <span className="label">Department:</span>
-                  <span className="value">{profile.department}</span>
-                </div>
-                <div className="info-row">
-                  <span className="label">Role:</span>
-                  <span className="value">{profile.role}</span>
-                </div>
-                <div className="info-row">
-                  <span className="label">Member Since:</span>
-                  <span className="value">{new Date(profile.created_at).toLocaleDateString()}</span>
-                </div>
+              <div className="grid grid-cols-2 gap-5 max-md:grid-cols-1">
+                {[
+                  ['Full Name', profile.full_name],
+                  ['Email', profile.email],
+                  ['Phone', profile.phone || 'Not provided'],
+                  ['Address', profile.address || 'Not provided'],
+                  ['Bio', profile.bio || 'Not provided'],
+                  ['Department', profile.department],
+                  ['Role', profile.role],
+                  ['Member Since', new Date(profile.created_at).toLocaleDateString()],
+                ].map(([label, value]) => (
+                  <div key={label} className="flex flex-col gap-1.5 p-3 bg-gray-50 rounded-md">
+                    <span className="font-semibold text-gray-500 text-xs uppercase">{label}:</span>
+                    <span className="text-gray-900 text-sm">{value}</span>
+                  </div>
+                ))}
               </div>
             )}
           </div>

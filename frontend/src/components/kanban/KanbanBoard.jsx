@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { taskService } from '../../services/api';
 import DroppableColumn from './DroppableColumn';
-import '../../styles/KanbanBoard.css';
 
 const KanbanBoard = ({ projectId, users }) => {
   const [tasks, setTasks] = useState([]);
@@ -42,7 +41,7 @@ const KanbanBoard = ({ projectId, users }) => {
     return tasks.filter(task => task.status === status);
   };
 
-  if (loading) return <div className="loading">Loading tasks...</div>;
+  if (loading) return <div className="flex justify-center items-center h-screen text-lg text-gray-500">Loading tasks...</div>;
 
   const statuses = ['pending', 'in_progress', 'completed'];
   const statusLabels = {
@@ -52,7 +51,7 @@ const KanbanBoard = ({ projectId, users }) => {
   };
 
   return (
-    <div className="kanban-board">
+    <div className="grid grid-cols-3 gap-5 p-5 bg-gray-100 min-h-screen overflow-x-auto max-lg:grid-cols-2 max-md:grid-cols-1">
       {statuses.map(status => (
         <DroppableColumn
           key={status}
