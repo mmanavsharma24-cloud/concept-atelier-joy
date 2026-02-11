@@ -1,12 +1,14 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { taskService, projectService, userService } from '../services/api';
+import { taskService, projectService, userService, attachmentService } from '../services/api';
 import { useAuth } from '../hooks/useAuth';
 import KanbanBoard from '../components/kanban/KanbanBoard';
 import PermissionGuard from '../components/common/PermissionGuard';
-import { handleAPIError, showError } from '../utils/errorHandler';
+import Modal from '../components/modals/Modal';
+import TaskForm from '../components/modals/TaskForm';
+import { handleAPIError, showError, showSuccess } from '../utils/errorHandler';
 import '../styles/Tasks.css';
 
 const Tasks = () => {
@@ -25,20 +27,23 @@ const Tasks = () => {
   const [filterDueDate, setFilterDueDate] = useState('all');
   const [searchTitle, setSearchTitle] = useState('');
 
-  const [viewMode, setViewMode] = useState('table'); // 'table' or 'kanban'
+  const [viewMode, setViewMode] = useState('table');
   const [selectedKanbanProject, setSelectedKanbanProject] = useState(null);
   const [isFocusMode, setIsFocusMode] = useState(false);
+
+  // Modal state for create/edit task
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingTask, setEditingTask] = useState(null);
 
   useEffect(() => {
     fetchData();
   }, [location]);
 
-  // Refresh data when page comes back into focus
   useEffect(() => {
     const handleFocus = () => {
       fetchData();
     };
-
     window.addEventListener('focus', handleFocus);
     return () => window.removeEventListener('focus', handleFocus);
   }, []);
@@ -46,9 +51,6 @@ const Tasks = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-
-      // For admin and manager: fetch all data
-      // For regular users: fetch only their assigned tasks and projects
       let tasksData, projectsData;
 
       if (user?.role === 'user') {
@@ -80,22 +82,18 @@ const Tasks = () => {
   const getFilteredTasks = () => {
     let filtered = tasks;
 
-    // Filter by status
     if (filterStatus !== 'all') {
       filtered = filtered.filter(t => t.status === filterStatus);
     }
 
-    // Filter by assignee (only for admin/manager)
     if (user?.role !== 'user' && filterAssignee !== 'all') {
       filtered = filtered.filter(t => t.assigned_to === Number(filterAssignee));
     }
 
-    // Filter by priority
     if (filterPriority !== 'all') {
       filtered = filtered.filter(t => t.priority === filterPriority);
     }
 
-    // Filter by due date
     if (filterDueDate !== 'all') {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -128,7 +126,6 @@ const Tasks = () => {
       });
     }
 
-    // Search by title
     if (searchTitle.trim()) {
       filtered = filtered.filter(t =>
         t.title.toLowerCase().includes(searchTitle.toLowerCase())
@@ -139,14 +136,72 @@ const Tasks = () => {
   };
 
   const handleCreateTask = () => {
-    window.open('/tasks/create', '_blank');
+    setShowCreateModal(true);
+  };
+
+  const handleEditTask = (task) => {
+    setEditingTask(task);
+    setShowEditModal(true);
+  };
+
+  const handleCreateSubmit = async (formData) => {
+    try {
+      const files = formData.files || [];
+      const { files: _, ...taskData } = formData;
+
+      const newTask = await projectService.createTask(taskData);
+
+      if (files.length > 0) {
+        for (const file of files) {
+          try {
+            await attachmentService.upload(newTask.id, file);
+          } catch (error) {
+            console.error('Error uploading file:', error);
+            showError(`Failed to upload ${file.name}`);
+          }
+        }
+      }
+
+      showSuccess('Task created successfully');
+      setShowCreateModal(false);
+      fetchData();
+    } catch (error) {
+      const { message } = handleAPIError(error, 'Failed to create task');
+      showError(message);
+    }
+  };
+
+  const handleEditSubmit = async (formData) => {
+    try {
+      const files = formData.files || [];
+      const { files: _, ...taskData } = formData;
+
+      await taskService.update(editingTask.id, taskData);
+
+      if (files.length > 0) {
+        for (const file of files) {
+          try {
+            await attachmentService.upload(editingTask.id, file);
+          } catch (error) {
+            console.error('Error uploading file:', error);
+            showError(`Failed to upload ${file.name}`);
+          }
+        }
+      }
+
+      showSuccess('Task updated successfully');
+      setShowEditModal(false);
+      setEditingTask(null);
+      fetchData();
+    } catch (error) {
+      const { message } = handleAPIError(error, 'Failed to update task');
+      showError(message);
+    }
   };
 
   const handleTaskRowClick = (task) => {
     navigate(`/tasks/${task.id}`);
   };
-
-
 
   if (loading) return <div className="loading">Loading tasks...</div>;
 
@@ -378,8 +433,6 @@ const Tasks = () => {
           </>
         )}
 
-        {/* Task Create/Edit Drawer - Removed, now opens in new tab */}
-
         {/* Focus Mode Fullscreen */}
         {isFocusMode && (
           <div className="focus-mode-fullscreen">
@@ -468,7 +521,7 @@ const Tasks = () => {
                           projects.map(project => (
                             <tr key={project.id} className="focus-mode-task-row">
                               <td style={{ width: '50%' }}>{project.name}</td>
-                              <td style={{ width: '25%' }}>{project.owner_name || 'N/A'}</td>
+                              <td style={{ width: '25%' }}>{project.owner_name || '-'}</td>
                               <td style={{ width: '25%' }}>
                                 {project.end_date
                                   ? new Date(project.end_date).toLocaleDateString()
@@ -491,6 +544,43 @@ const Tasks = () => {
             </div>
           </div>
         )}
+
+        {/* Create Task Modal */}
+        <Modal
+          isOpen={showCreateModal}
+          title="Create New Task"
+          onClose={() => setShowCreateModal(false)}
+          size="large"
+        >
+          <div className="p-6">
+            <TaskForm
+              users={users}
+              projects={projects}
+              onSubmit={handleCreateSubmit}
+              onCancel={() => setShowCreateModal(false)}
+            />
+          </div>
+        </Modal>
+
+        {/* Edit Task Modal */}
+        <Modal
+          isOpen={showEditModal}
+          title="Edit Task"
+          onClose={() => { setShowEditModal(false); setEditingTask(null); }}
+          size="large"
+        >
+          <div className="p-6">
+            {editingTask && (
+              <TaskForm
+                task={editingTask}
+                users={users}
+                projects={projects}
+                onSubmit={handleEditSubmit}
+                onCancel={() => { setShowEditModal(false); setEditingTask(null); }}
+              />
+            )}
+          </div>
+        </Modal>
       </div>
     </DndProvider>
   );

@@ -7,8 +7,6 @@ import ProjectDetails from '../../pages/ProjectDetails';
 import CreateProject from '../../pages/CreateProject';
 import Tasks from '../../pages/Tasks';
 import TaskDetails from '../../pages/TaskDetails';
-import CreateTask from '../../pages/CreateTask';
-import EditTask from '../../pages/EditTask';
 import Dashboard from '../../pages/Dashboard';
 import Analytics from '../../pages/Analytics';
 import Inbox from '../../pages/Inbox';
@@ -41,20 +39,14 @@ function MainLayout() {
   // Check if we're on a project details page (has /projects/:id pattern)
   const isProjectDetailsPage = /^\/projects\/\d+$/.test(location.pathname);
   
-  // Check if we're on a task details page (has /tasks/:id pattern, but not /tasks/:id/edit)
+  // Check if we're on a task details page (has /tasks/:id pattern)
   const isTaskDetailsPage = /^\/tasks\/\d+$/.test(location.pathname);
   
   // Check if we're on a create project page
   const isCreateProjectPage = location.pathname === '/projects/create';
   
-  // Check if we're on a create task page
-  const isCreateTaskPage = location.pathname === '/tasks/create';
-  
-  // Check if we're on an edit task page (has /tasks/:id/edit pattern)
-  const isEditTaskPage = /^\/tasks\/\d+\/edit$/.test(location.pathname);
-  
-  // Hide sidebar for project details, task details, create project, create task, and edit task pages
-  const hideSidebar = isProjectDetailsPage || isTaskDetailsPage || isCreateProjectPage || isCreateTaskPage || isEditTaskPage;
+  // Hide sidebar for project details, task details, and create project pages
+  const hideSidebar = isProjectDetailsPage || isTaskDetailsPage || isCreateProjectPage;
 
   return (
     <div className="App">
@@ -65,8 +57,6 @@ function MainLayout() {
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/inbox" element={<Inbox />} />
           <Route path="/my-tasks" element={<Tasks />} />
-          <Route path="/tasks/create" element={<CreateTask />} />
-          <Route path="/tasks/:id/edit" element={<EditTask />} />
           <Route path="/tasks/:id" element={<TaskDetails />} />
           <Route path="/tasks" element={<Tasks />} />
           <Route path="/projects/create" element={<CreateProject />} />
