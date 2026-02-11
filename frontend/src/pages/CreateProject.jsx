@@ -4,7 +4,7 @@ import { projectService, userService, attachmentService } from '../services/api'
 import { useAuth } from '../hooks/useAuth';
 import ProjectForm from '../components/modals/ProjectForm';
 import { handleAPIError, showError, showSuccess } from '../utils/errorHandler';
-import '../styles/Projects.css';
+
 
 const CreateProject = () => {
   const navigate = useNavigate();
