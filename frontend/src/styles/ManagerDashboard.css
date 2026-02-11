@@ -1,0 +1,501 @@
+.manager-dashboard {
+  padding: 30px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+}
+
+.page-header {
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.page-header h1 {
+  font-size: 36px;
+  color: #2c3e50;
+  margin: 0 0 10px 0;
+  font-weight: 800;
+}
+
+.page-header p {
+  font-size: 16px;
+  color: #7f8c8d;
+  margin: 0;
+}
+
+/* Manager Stats */
+.manager-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f0f4f8 100%);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border-left: 5px solid #f39c12;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.stat-card:nth-child(5) {
+  cursor: default;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.stat-icon {
+  font-size: 28px;
+  min-width: 45px;
+}
+
+.stat-content {
+  flex: 1;
+}
+
+.stat-number {
+  font-size: 24px;
+  font-weight: 800;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: #95a5a6;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+/* Manager Sections */
+.manager-section {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  margin-bottom: 30px;
+  border: 1px solid rgba(243, 156, 18, 0.1);
+}
+
+.manager-section h2 {
+  font-size: 22px;
+  color: #2c3e50;
+  margin: 0 0 20px 0;
+  font-weight: 700;
+  border-bottom: 3px solid #f39c12;
+  padding-bottom: 15px;
+}
+
+/* Task Distribution */
+.task-distribution {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+}
+
+.distribution-card {
+  background: linear-gradient(135deg, #f8fbff 0%, #ffffff 100%);
+  padding: 20px;
+  border-radius: 10px;
+  border: 2px solid #ecf0f1;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.distribution-card:hover {
+  border-color: #f39c12;
+  box-shadow: 0 4px 15px rgba(243, 156, 18, 0.1);
+}
+
+.distribution-icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.distribution-number {
+  font-size: 28px;
+  font-weight: 800;
+  color: #2c3e50;
+  margin: 10px 0;
+}
+
+.distribution-label {
+  font-size: 12px;
+  color: #95a5a6;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.distribution-percent {
+  font-size: 14px;
+  font-weight: 700;
+  color: #f39c12;
+}
+
+/* Projects List */
+.projects-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.project-card {
+  background: linear-gradient(135deg, #f8fbff 0%, #ffffff 100%);
+  padding: 20px;
+  border-radius: 10px;
+  border-left: 4px solid #f39c12;
+  transition: all 0.3s ease;
+}
+
+.project-card:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.project-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 10px;
+}
+
+.project-header h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #2c3e50;
+  font-weight: 700;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.status-active {
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  color: #155724;
+}
+
+.status-in_progress {
+  background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+  color: #856404;
+}
+
+.status-planning {
+  background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+  color: #0c5460;
+}
+
+.project-description {
+  font-size: 13px;
+  color: #7f8c8d;
+  margin: 8px 0;
+  line-height: 1.4;
+}
+
+.project-stats {
+  display: flex;
+  gap: 15px;
+  margin: 15px 0;
+  padding: 10px 0;
+  border-top: 1px solid #ecf0f1;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.project-stat {
+  flex: 1;
+  text-align: center;
+}
+
+.project-stat .stat-label {
+  font-size: 11px;
+  color: #95a5a6;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.project-stat .stat-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: #f39c12;
+}
+
+/* Progress Bar */
+.progress-bar {
+  width: 100%;
+  height: 20px;
+  background-color: #ecf0f1;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #f39c12, #e67e22);
+  transition: width 0.3s ease;
+}
+
+/* Team Performance */
+.team-performance {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.performance-card {
+  background: linear-gradient(135deg, #f8fbff 0%, #ffffff 100%);
+  padding: 20px;
+  border-radius: 10px;
+  border: 2px solid #ecf0f1;
+  transition: all 0.3s ease;
+}
+
+.performance-card:hover {
+  border-color: #f39c12;
+  box-shadow: 0 4px 15px rgba(243, 156, 18, 0.1);
+}
+
+.performance-card h3 {
+  font-size: 14px;
+  color: #2c3e50;
+  margin: 0 0 15px 0;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.performance-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.performance-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: #7f8c8d;
+}
+
+.performance-stat strong {
+  color: #f39c12;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.no-data {
+  text-align: center;
+  color: #95a5a6;
+  font-style: italic;
+  padding: 30px;
+}
+
+.loading {
+  text-align: center;
+  padding: 50px;
+  font-size: 18px;
+  color: #7f8c8d;
+}
+
+/* Section Header with Back Button */
+.section-header-with-back {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.back-btn {
+  padding: 8px 14px;
+  background-color: #ecf0f1;
+  color: #2c3e50;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.back-btn:hover {
+  background-color: #d5dbdb;
+  transform: translateX(-2px);
+}
+
+.section-header-with-back h2 {
+  margin: 0;
+  border: none;
+  padding: 0;
+  font-size: 22px;
+}
+
+/* Tasks Table */
+.tasks-table {
+  overflow-x: auto;
+}
+
+.tasks-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tasks-table thead {
+  background: linear-gradient(135deg, #ecf0f1 0%, #d5dbdb 100%);
+  border-bottom: 2px solid #f39c12;
+}
+
+.tasks-table th {
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: 700;
+  color: #2c3e50;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.tasks-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #ecf0f1;
+  font-size: 13px;
+  color: #2c3e50;
+}
+
+.tasks-table tbody tr:hover {
+  background-color: #f0f8ff;
+}
+
+/* Team List */
+.team-list {
+  overflow-x: auto;
+}
+
+.team-list table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.team-list thead {
+  background: linear-gradient(135deg, #ecf0f1 0%, #d5dbdb 100%);
+  border-bottom: 2px solid #f39c12;
+}
+
+.team-list th {
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: 700;
+  color: #2c3e50;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.team-list td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #ecf0f1;
+  font-size: 13px;
+  color: #2c3e50;
+}
+
+.team-list tbody tr:hover {
+  background-color: #f0f8ff;
+}
+
+.priority-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.priority-low {
+  background: #d4edda;
+  color: #155724;
+}
+
+.priority-medium {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.priority-high {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.priority-critical {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .manager-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .projects-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .manager-dashboard {
+    padding: 20px;
+  }
+
+  .page-header h1 {
+    font-size: 28px;
+  }
+
+  .manager-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .projects-list {
+    grid-template-columns: 1fr;
+  }
+
+  .manager-section {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .manager-dashboard {
+    padding: 15px;
+  }
+
+  .page-header h1 {
+    font-size: 22px;
+  }
+
+  .manager-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .task-distribution {
+    grid-template-columns: 1fr;
+  }
+
+  .team-performance {
+    grid-template-columns: 1fr;
+  }
+}
